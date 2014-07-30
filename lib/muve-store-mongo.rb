@@ -1,5 +1,5 @@
 require "muve-store-mongo/version"
-require 'muve'
+require "muve"
 
 module Muve
   module Store

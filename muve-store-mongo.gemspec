@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["david@supr.nu"]
   gem.description   = "The Mongo adaptor takes care of all the Mongo-related hassles while allowing you the trusty Muve interface"
   gem.summary       = "Mongo adaptor for the Muve engine"
-  gem.homepage      = "muve.io"
+  gem.homepage      = "https://github.com/vidbina/muve-store-mongo"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }

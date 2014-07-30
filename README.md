@@ -1,6 +1,8 @@
 # Muve::Store::Mongo
 
-TODO: Write a gem description
+[![Gem Version](https://badge.fury.io/rb/muve-store-mongo.svg)](http://badge.fury.io/rb/muve-store-mongo)
+The muve-store-mongo gem is an implementation of the ```Muve::Store``` for use
+with MongoDB datastores.
 
 ## Installation
 
