@@ -2,8 +2,6 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem "muve", "~> 1.0.0"
-gem "mongo", "~> 1.10.2"
 gem "bson_ext", "~> 1.10.2"
 
 group :test do
