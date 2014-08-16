@@ -4,8 +4,15 @@ require 'mongo'
 describe 'Mongo Adaptor' do
   let(:connection) { Mongo::MongoClient.new }
   let(:database) { connection.db('muve_test') }
+  let(:adaptor) { Muve::Store::Mongo }
+  let(:id_of_stored_resource) { database['places'].insert(
+    name: Faker::Venue.name
+  ) }
+
   before do
     class Place
+      attr_accessor :city, :street, :building, :name
+
       include Muve::Model
 
       def self.container
@@ -19,6 +26,7 @@ describe 'Mongo Adaptor' do
   it 'writes model data to the store' do
     expect{
       Muve::Store::Mongo.create(Place, {
+        name: Faker::Venue.name,
         city: Faker::Address.city,
         street: Faker::Address.street_name,
         building: Faker::Address.building_number
@@ -27,27 +35,52 @@ describe 'Mongo Adaptor' do
   end
 
   it 'writes modifications to the store' do
-    id = database['places'].insert(name: Faker::Venue.name)
     new_name = Faker::Venue.name
-
-    expect{
-      Muve::Store::Mongo.update(Place, id, { name: new_name })
-    }.to change{database['places'].find_one(_id: id)['name']}.to(new_name)
+    expect {
+      adaptor.update(Place, id_of_stored_resource, { name: new_name })
+    }.to change {
+      database['places'].find_one(_id: id_of_stored_resource)['name']
+    }.to(new_name)
   end
 
   it 'finds a resource from store' do
-    id = database['places'].insert(name: Faker::Venue.name)
-    expect(Muve::Store::Mongo.get(Place, id)[:id]).to eq(id)
+    expect(adaptor.get(Place, id_of_stored_resource)[:id]).to eq(id_of_stored_resource)
   end
 
   it 'finds multiple resources from store' do
-    expect(Muve::Store::Mongo.find(Place, {})).to be_a(Enumerable)
+    expect(adaptor.find(Place, {})).to be_a(Enumerable)
+  end
+
+  it 'removes a resource from the store' do
+    id_of_resource_to_be_removed = id_of_stored_resource
+    expect {
+      adaptor.delete(Place, id_of_resource_to_be_removed)
+    }.to change { database['places'].count }.by(-1)
   end
 
   it 'extracts a resource from every result in a multiple resource set' do
-    Muve::Store::Mongo.find(Place, {}).take(3).each do |result|
+    adaptor.find(Place, {}).take(3).each do |result|
       attributes = result.keys.map{ |i| i.to_s }
-      expect(attributes).to include('id', 'city', 'street', 'building')
+      #p "attributes #{attributes} #{result}"
+      expect(attributes).to include('id', 'name')
     end
+  end
+
+  context "wired to handle model I/O" do
+    before do
+      Place.adaptor = adaptor
+    end
+
+    it {
+      expect(adaptor).to receive(:find).with(Place, {})
+      Place.where({}).count
+    }
+
+    it {
+      expect_any_instance_of(Place).to receive(:populate).with(anything).once
+      Place.where({}).take(1).each do |item|
+        expect(item).to be_a_kind_of(Place)
+      end
+    }
   end
 end
