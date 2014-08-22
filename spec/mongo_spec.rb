@@ -23,6 +23,13 @@ describe 'Mongo Adaptor' do
     Muve.init(connection, database)
   end
   
+  it { expect { Muve::Store::Mongo.update(Place, 12, nil) }.to raise_error }
+  it { expect { Muve::Store::Mongo.delete(Place, 12, nil) }.to raise_error }
+  it { expect { Muve::Store::Mongo.count(Place, 12) }.to raise_error }
+  it { expect { Muve::Store::Mongo.count(Place, 12) }.to raise_error }
+  it { expect { Muve::Store::Mongo.find(Place, 12) }.to raise_error }
+  it { expect { Muve::Store::Mongo.fetch(Place, 12, nil) }.to raise_error }
+
   it 'writes model data to the store' do
     expect{
       Muve::Store::Mongo.create(Place, {
@@ -36,7 +43,7 @@ describe 'Mongo Adaptor' do
 
   it 'counts the records in the datastore' do
     expect{
-      p database['places'].insert(
+      database['places'].insert(
         name: "Willy Wonka's Chocolate Factory",
         street: "Chocolane 12",
         building: "8",
