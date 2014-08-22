@@ -48,6 +48,11 @@ module Muve
         details = details.merge(_id: id) if id
         resource.database[resource.container].remove(details)
       end
+
+      def self.count(resource, details)
+        details = {} unless details.kind_of? Hash
+        resource.database[resource.container].count(details)
+      end
     end
   end
 end

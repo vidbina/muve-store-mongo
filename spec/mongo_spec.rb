@@ -34,6 +34,17 @@ describe 'Mongo Adaptor' do
     }.to change{database['places'].count}.by(1)
   end
 
+  it 'counts the records in the datastore' do
+    expect{
+      p database['places'].insert(
+        name: "Willy Wonka's Chocolate Factory",
+        street: "Chocolane 12",
+        building: "8",
+        city: "Confectionopolis"
+      )
+    }.to change{Muve::Store::Mongo.count(Place, {})}.by(1)
+  end
+
   it 'writes modifications to the store' do
     new_name = Faker::Venue.name
     expect {
