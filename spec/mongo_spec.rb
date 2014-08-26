@@ -23,12 +23,12 @@ describe 'Mongo Adaptor' do
     Muve.init(connection, database)
   end
   
-  it { expect { Muve::Store::Mongo.update(Place, 12, nil) }.to raise_error }
-  it { expect { Muve::Store::Mongo.delete(Place, 12, nil) }.to raise_error }
-  it { expect { Muve::Store::Mongo.count(Place, 12) }.to raise_error }
-  it { expect { Muve::Store::Mongo.count(Place, 12) }.to raise_error }
-  it { expect { Muve::Store::Mongo.find(Place, 12) }.to raise_error }
-  it { expect { Muve::Store::Mongo.fetch(Place, 12, nil) }.to raise_error }
+  it { expect { Muve::Store::Mongo.update(Place, 12, nil) }.to raise_error(Muve::Error::InvalidAttribute) }
+  it { expect { Muve::Store::Mongo.delete(Place, 12, nil) }.to raise_error(Muve::Error::InvalidAttribute) }
+  it { expect { Muve::Store::Mongo.count(Place, 12) }.to raise_error(Muve::Error::InvalidAttribute) }
+  it { expect { Muve::Store::Mongo.count(Place, 12) }.to raise_error(Muve::Error::InvalidAttribute) }
+  it { expect { Muve::Store::Mongo.find(Place, 12) }.to raise_error(Muve::Error::InvalidAttribute) }
+  it { expect { Muve::Store::Mongo.fetch(Place, 12, nil) }.to raise_error(Muve::Error::InvalidAttribute) }
 
   it 'writes model data to the store' do
     expect{
