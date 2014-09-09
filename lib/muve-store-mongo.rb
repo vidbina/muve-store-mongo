@@ -6,6 +6,7 @@ module Muve
   module Store
     module Mongo
       require 'muve-store-mongo/errors'
+      require 'muve-store-mongo/formatter'
 
       extend Muve::Store
 

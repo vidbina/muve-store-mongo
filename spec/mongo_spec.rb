@@ -79,7 +79,6 @@ describe 'Mongo Adaptor' do
   it 'extracts a resource from every result in a multiple resource set' do
     adaptor.find(Place, {}).take(3).each do |result|
       attributes = result.keys.map{ |i| i.to_s }
-      #p "attributes #{attributes} #{result}"
       expect(attributes).to include('id', 'name')
     end
   end
