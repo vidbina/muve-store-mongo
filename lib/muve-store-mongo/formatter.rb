@@ -2,19 +2,7 @@ module Muve
   module Store
     module Mongo
       module Formatter
-        def self.extract(obj, fields)
-          {}
-        end
-
-        def self.extract_location_from_field(obj, fieldname)
-          loc = obj.send(fieldname)
-          raise "Invalid resource for extract" unless loc.kind_of? Muve::Location
-          return { type: 'Point', coordinates: [loc.longitude, loc.latitude] }
-        end
-
-        def self.convert_to_location(obj, fieldname)
-          
-        end
+        extend Muve::Store::Formatter
 
         def self.convert_to_storeable_object(resource)
           return {

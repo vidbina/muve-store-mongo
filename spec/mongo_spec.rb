@@ -20,15 +20,37 @@ describe 'Mongo Adaptor' do
       end
     end
 
+    class MockCollection
+      def self.insert(arg)
+      end
+    end
+
+    class MockResource
+      def self.database
+        [ MockCollection ]
+      end
+
+      def self.container
+        0
+      end
+
+      def self.collection
+        'collection'
+      end
+    end
+
     Muve.init(connection, database)
   end
   
+  it { expect { Muve::Store::Mongo.create(Place, 12) }.to raise_error(Muve::Error::InvalidAttribute) }
   it { expect { Muve::Store::Mongo.update(Place, 12, nil) }.to raise_error(Muve::Error::InvalidAttribute) }
   it { expect { Muve::Store::Mongo.delete(Place, 12, nil) }.to raise_error(Muve::Error::InvalidAttribute) }
   it { expect { Muve::Store::Mongo.count(Place, 12) }.to raise_error(Muve::Error::InvalidAttribute) }
   it { expect { Muve::Store::Mongo.count(Place, 12) }.to raise_error(Muve::Error::InvalidAttribute) }
   it { expect { Muve::Store::Mongo.find(Place, 12) }.to raise_error(Muve::Error::InvalidAttribute) }
   it { expect { Muve::Store::Mongo.fetch(Place, 12, nil) }.to raise_error(Muve::Error::InvalidAttribute) }
+
+  it { expect(Muve::Store::Mongo.formatter).to eq(Muve::Store::Mongo::Formatter) }
 
   it 'writes model data to the store' do
     expect{
@@ -98,6 +120,43 @@ describe 'Mongo Adaptor' do
       Place.where({}).take(1).each do |item|
         expect(item).to be_a_kind_of(Place)
       end
+    }
+
+    it {
+      Muve::Place.adaptor = adaptor
+      expect(adaptor).to receive(:create).with(Muve::Place, {
+        name: 'Hell',
+        location: { type: 'Place', coordinates: [6, 66] }
+      })
+
+      Muve::Place.new(
+        name: 'Hell', 
+        location: Muve::Location.new(latitude: 66, longitude: 6)
+      ).save
+    }
+
+    it {
+      Place.adaptor = adaptor
+      expect(adaptor).to receive(:create).with(Muve::Place, {
+        name: 'Hell',
+        location: { type: 'Place', coordinates: [6, 66] }
+      })
+
+      Muve::Place.new(
+        name: 'Hell', 
+        location: Muve::Location.new(latitude: 66, longitude: 6)
+      ).save
+    }
+
+    it {
+      storeable_object = {
+        name: 'Hell', 
+        location: Muve::Location.new(latitude: 66, longitude: 6)
+      }
+
+      expect(MockCollection).to receive(:insert).with(storeable_object)
+
+      Muve::Store::Mongo.create(MockResource, storeable_object)
     }
   end
 end

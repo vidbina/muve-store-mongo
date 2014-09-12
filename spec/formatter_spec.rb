@@ -17,17 +17,6 @@ describe 'Mongo Formatter' do
     coordinates: [longitude, latitude]
   }) }
 
-  it { expect(Muve::Store::Mongo::Formatter.extract_location_from_field(place, :location)).to eq({
-    type: 'Point',
-    coordinates: [longitude, latitude]
-  }) }
-
-  it { 
-    expect{
-      Muve::Store::Mongo::Formatter.extract_location_from_field(place, :name)
-    }.to raise_error 
-  }
-
   it { expect(
     Muve::Store::Mongo::Formatter.convert_from_storeable_object(storeable)
   ).to eq(Muve::Location.new(latitude: latitude, longitude: longitude)) }

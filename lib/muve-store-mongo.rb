@@ -1,5 +1,5 @@
-require "muve-store-mongo/version"
-require "muve"
+require 'muve-store-mongo/version'
+require 'muve'
 require 'mongo'
 
 module Muve
@@ -60,6 +60,10 @@ module Muve
       def self.count(resource, details={})
         raise Muve::Error::InvalidAttribute, "Invalid details" unless details.kind_of? Hash
         resource.database[resource.container].count(details)
+      end
+
+      def self.formatter
+        Muve::Store::Mongo::Formatter
       end
     end
   end
