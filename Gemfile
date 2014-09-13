@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem "bson_ext", "~> 1.10.2"
-gem "muve", "~> 1.2.0"
+gem "muve", "~> 1.2.1"
 
 group :test do
   gem "ffaker", "~> 1.24.0"
