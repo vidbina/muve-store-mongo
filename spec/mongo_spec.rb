@@ -11,9 +11,9 @@ describe 'Mongo Adaptor' do
 
   before do
     class Place
-      attr_accessor :city, :street, :building, :name
-
       include Muve::Model
+
+      with_fields :city, :street, :building, :name
 
       def self.container
         'places'
